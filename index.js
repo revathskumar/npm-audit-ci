@@ -23,7 +23,7 @@ var argv = require('yargs')
         type: 'boolean'
       },
       'c': {
-        alias: 'crititcal',
+        alias: 'critical',
         default: true,
         describe: 'Exit only for critical vulnerabilities',
         type: 'boolean'

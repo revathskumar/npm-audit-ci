@@ -21,7 +21,7 @@ Options:
                                                       [boolean] [default: false]
   -h, --high       Exit only when high or above vulnerabilities
                                                       [boolean] [default: false]
-  -c, --crititcal  Exit only for critical vulnerabilities
+  -c, --critical  Exit only for critical vulnerabilities
                                                        [boolean] [default: true]
   --help           Show help
 ```
