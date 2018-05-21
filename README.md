@@ -1,4 +1,4 @@
-npm audit ci
+npm audit ci  [![Build Status](https://travis-ci.org/revathskumar/npm-audit-ci.svg?branch=master)](https://travis-ci.org/revathskumar/npm-audit-ci)
 ======================
 
     Commandline utility which exit the process with code 1, for the given criteria of vulnerabilities
