@@ -28,5 +28,5 @@ Options:
 
 License
 -------
-Please see [License](https://github.com/revathskumar/npm-audit-ci/License)
+Please see [License](https://github.com/revathskumar/npm-audit-ci/blob/master/License)
 
