@@ -2,31 +2,64 @@
 var exec = require('child_process').exec;
 var process = require('process');
 
-module.exports = function() {
-  var failOnSevity = "HIGH"
-  var cliArgs = process.argv.slice(2);
-  if (cliArgs[0] === "--help" || cliArgs[0] === "-h") {
-    console.log(
-      "      --high : exit only when high severity issues are found\n\
-      --moderate : exit when moderate or high severity issues are found\n\
-      --low : exit when low, moderate or high severity issues are found\n\
-      --help, -h : show this help message"
-    );
-    return;
-  } 
-  switch (cliArgs[0]) {
-    case '--low':
-      failOnSevity = "LOW";
-      break
-    case '--moderate':
-      failOnSevity = "MODERATE";
-      break
-    case '--high':
-    default:
-      failOnSevity = "HIGH"
-      break;
+var argv = require('yargs')
+    .options({
+      'l': {
+        alias: 'low',
+        default: false,
+        describe: 'Exit even for low vulnerabilities',
+        type: 'boolean'
+      },
+      'm': {
+        alias: 'moderate',
+        default: false,
+        describe: 'Exit only when moderate or above vulnerabilities',
+        type: 'boolean'
+      },
+      'h': {
+        alias: 'high',
+        default: false,
+        describe: 'Exit only when high or above vulnerabilities',
+        type: 'boolean'
+      },
+      'c': {
+        alias: 'crititcal',
+        default: true,
+        describe: 'Exit only for critical vulnerabilities',
+        type: 'boolean'
+      }
+    })
+    .help('help')
+    .argv;
+
+const parseMessage = (severityline) => {
+  if (severityline.indexOf('Severity:') === -1) {
+    return ''; 
+  }
+  var matches = severityline.match(/^(\D+|)((\d+)\D+[lL]ow|)(\D+|)((\d+)\D+[mM]oderate|)(\D+|)((\d+)\D+[hH]igh|)(\D+|)((\d+)\D+[cC]ritical|)/);
+  var lowCount = matches[3];
+  var moderateCount = matches[6];
+  var highCount = matches[9];
+  var criticalCount = matches[12];
+
+  if (argv.critical && criticalCount > 0) {
+    return 'CRITICAL';
   }
 
+  if (argv.high && (criticalCount > 0 || highCount > 0)) {
+    return 'HIGH';
+  }
+
+  if (argv.moderate && (criticalCount > 0 || highCount > 0 || moderateCount > 0)) {
+    return 'MODERATE';
+  }
+
+  if (argv.low && (criticalCount > 0 || highCount > 0 || moderateCount > 0 || lowCount > 0)) {
+    return 'LOW';
+  }
+}
+
+module.exports = function() {
   exec('npm audit', function (error, stdout, stderr) {
     if (stdout) {
       if (stdout.indexOf('[+] no known vulnerabilities found') >= 0) {
@@ -35,44 +68,21 @@ module.exports = function() {
       
       var logArr = stdout.split('\n').filter(line => line);
       var severityline = logArr[logArr.length - 1];
-      if (severityline.indexOf('Severity:') >= -1) {
-        var matches = severityline.match(/^\D+(\d+)\D+low\D+(\d+)\D+moderate\D+(\d+)\D+high/);
-        var lowCount = matches[1];
-        var moderateCount = matches[2];
-        var highCount = matches[3];
-        switch (failOnSevity) {
-          case 'HIGH':
-            if (highCount > 0) {
-              console.log('FAILURE :: HIGH :: ' + severityline);
-              process.exit(1);
-              return;
-            }
-            break;
-          case 'MODERATE':
-            if (highCount > 0 || moderateCount > 0) {
-              console.log('FAILURE :: MODERATE :: ' + severityline);
-              process.exit(1);
-              return;
-            }
-            break;
-          case 'LOW':
-            if (highCount > 0 || moderateCount > 0 || lowCount > 0) {
-              console.log('FAILURE :: LOW :: ' + severityline);
-              process.exit(1);
-              return;
-            }
-            break;
-          default:
-            break;
-        }
-        
+      var severityType = parseMessage(severityline);
+      switch (severityType) {
+        case 'CRITICAL':
+        case 'HIGH':
+        case 'MODERATE':
+        case 'LOW':
+          console.log(`FAILURE :: ${severityType} :: ${severityline}`);
+          process.exit(1);
+          return;
+        case '':      
+        default:
+          console.log(severityline);
+          return;
       }
-      console.log(logArr[logArr.length - 2]);
-      return;
     }
-
-    console.log('stdout: ' + stdout);
-    console.log('stderr: ' + stderr);
     if (error !== null) {
       console.log('exec error: ' + error);
     }
