@@ -1,6 +1,6 @@
 {
   "name": "npm-audit-ci",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Commandline utility which exit the process with code 1, for the given criteria of vulnerabilities",
   "main": "index.js",
   "bin": "bin/npm-audit-ci",
