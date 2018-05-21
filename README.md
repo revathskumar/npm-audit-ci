@@ -5,6 +5,13 @@ npm audit ci  [![Build Status](https://travis-ci.org/revathskumar/npm-audit-ci.s
 
 Useful to make CI build fail when vulnerabilities are found or use to send alert using another tool.
 
+
+### Usage
+
+```
+npm install -g npm-audit-ci
+```
+
 ```
 › npm-audit-ci --help                    
 Options:

@@ -11,7 +11,12 @@
   "scripts": {
     "test": "ava"
   },
-  "keywords": [],
+  "keywords": [
+      "audit",
+      "ci",
+      "npm",
+      "continuous integration"
+  ],
   "author": "Revath S Kumar <rsk@revathskumar.com> (http://blog.revathskumar.com/)",
   "license": "MIT",
   "devDependencies": {
