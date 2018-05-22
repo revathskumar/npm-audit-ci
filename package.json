@@ -9,7 +9,8 @@
     "bin/"
   ],
   "scripts": {
-    "test": "ava"
+    "test": "ava",
+    "audit-ci": "./bin/npm-audit-ci -c"
   },
   "keywords": [
     "audit",
