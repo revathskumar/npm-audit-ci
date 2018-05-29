@@ -15,15 +15,16 @@ npm install -g npm-audit-ci
 ```
 › npm-audit-ci --help                    
 Options:
-  --version        Show version number                                 [boolean]
-  -l, --low        Exit even for low vulnerabilities  [boolean] [default: false]
-  -m, --moderate   Exit only when moderate or above vulnerabilities
+  --version       Show version number                                  [boolean]
+  -l, --low       Exit even for low vulnerabilities   [boolean] [default: false]
+  -m, --moderate  Exit only when moderate or above vulnerabilities
                                                       [boolean] [default: false]
-  -h, --high       Exit only when high or above vulnerabilities
+  -h, --high      Exit only when high or above vulnerabilities
                                                       [boolean] [default: false]
   -c, --critical  Exit only for critical vulnerabilities
                                                        [boolean] [default: true]
-  --help           Show help
+  -r, --report    Show npm audit report               [boolean] [default: false]
+  --help          Show help                                            [boolean]
 ```
 
 License
