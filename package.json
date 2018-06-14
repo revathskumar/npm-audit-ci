@@ -20,6 +20,10 @@
   ],
   "author": "Revath S Kumar <rsk@revathskumar.com> (http://blog.revathskumar.com/)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/revathskumar/npm-audit-ci.git"
+  },
   "devDependencies": {
     "ava": "^0.25.0"
   },
