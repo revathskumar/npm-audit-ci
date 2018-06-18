@@ -27,6 +27,12 @@ var argv = require('yargs')
         default: true,
         describe: 'Exit only for critical vulnerabilities',
         type: 'boolean'
+      },
+      'r': {
+        alias: 'report',
+        default: false,
+        describe: 'Show npm audit report',
+        type: 'boolean'
       }
     })
     .help('help')
@@ -68,6 +74,10 @@ const run = () =>{
         return console.log('No issues :: SUCCESS');
       }
       
+      if (argv.report) {
+        console.log(stdout);
+      }
+
       var logArr = stdout.split('\n').filter(line => line);
       var severityline = logArr[logArr.length - 1];
       var severityType = parseMessage(severityline, argv);
@@ -76,12 +86,21 @@ const run = () =>{
         case 'HIGH':
         case 'MODERATE':
         case 'LOW':
-          console.log(`FAILURE :: ${severityType} :: ${severityline}`);
+          let message = `FAILURE :: ${severityType}`;
+
+          if (!argv.report) {
+            message = `${message} :: ${severityline}`;
+          }
+
+          console.log(message);
           process.exit(1);
           return;
         case '':      
         default:
-          console.log(severityline);
+          if (!argv.report) {
+            console.log(severityline);
+          }
+
           return;
       }
     }
