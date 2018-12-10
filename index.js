@@ -39,9 +39,6 @@ var argv = require('yargs')
     .argv;
 
 const parseMessage = (severityline, argv = {}) => {
-  if (severityline.indexOf('Severity:') === -1) {
-    return ''; 
-  }
   var matches = severityline.match(/^(\D+|)((\d+)\D+[lL]ow|)(\D+|)((\d+)\D+[mM]oderate|)(\D+|)((\d+)\D+[hH]igh|)(\D+|)((\d+)\D+[cC]ritical|)/);
   var lowCount = parseInt(matches[3]);
   var moderateCount = parseInt(matches[6]);
