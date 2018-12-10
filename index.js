@@ -76,7 +76,7 @@ const run = () =>{
       }
 
       var logArr = stdout.split('\n').filter(line => line);
-      var severityline = logArr[logArr.length - 1];
+      var severityline = logArr.find((line) => line.startsWith('found'));
       var severityType = parseMessage(severityline, argv);
       switch (severityType) {
         case 'CRITICAL':
