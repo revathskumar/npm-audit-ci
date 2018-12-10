@@ -65,10 +65,10 @@ const parseMessage = (severityline, argv = {}) => {
   }
 
   return '';
-}
+};
 
 const run = () =>{
-  exec('npm audit', function (error, stdout, stderr) {
+  exec('npm audit | sed -E "s/[[:cntrl:]]\\[[0-9]{1,3}m//g"', function (error, stdout, stderr) {
     if (stdout) {
       if (stdout.indexOf('[+] no known vulnerabilities found') >= 0) {
         return console.log('No issues :: SUCCESS');
@@ -108,7 +108,7 @@ const run = () =>{
       console.log('exec error: ' + error);
     }
   });
-}
+};
 
 module.exports = {
   run: run,
