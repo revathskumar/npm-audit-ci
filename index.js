@@ -40,10 +40,10 @@ var argv = require('yargs')
 
 const parseMessage = (severityline, argv = {}) => {
   var matches = severityline.match(/.*\((\D+|)((\d+)\D+[lL]ow|)(\D+|)((\d+)\D+[mM]oderate|)(\D+|)((\d+)\D+[hH]igh|)(\D+|)((\d+)\D+[cC]ritical|)/);
-  var lowCount = parseInt(matches[3]);
-  var moderateCount = parseInt(matches[6]);
-  var highCount = parseInt(matches[9]);
-  var criticalCount = parseInt(matches[12]);
+  var lowCount = matches && parseInt(matches[3]);
+  var moderateCount =  matches && parseInt(matches[6]);
+  var highCount =  matches && parseInt(matches[9]);
+  var criticalCount =  matches && (matches[12]);
 
   if (argv.critical && criticalCount > 0) {
     return 'CRITICAL';
