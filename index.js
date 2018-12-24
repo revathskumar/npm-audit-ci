@@ -38,37 +38,30 @@ var argv = require('yargs')
     .help('help')
     .argv;
 
-const parseMessage = (severityline, argv = {}) => {
-  if (severityline.indexOf('Severity:') === -1) {
-    return ''; 
-  }
-  var matches = severityline.match(/^(\D+|)((\d+)\D+[lL]ow|)(\D+|)((\d+)\D+[mM]oderate|)(\D+|)((\d+)\D+[hH]igh|)(\D+|)((\d+)\D+[cC]ritical|)/);
-  var lowCount = parseInt(matches[3]);
-  var moderateCount = parseInt(matches[6]);
-  var highCount = parseInt(matches[9]);
-  var criticalCount = parseInt(matches[12]);
+const parseJson = (json, argv = {}) => {
+  const {moderate, high, critical} = json.metadata.vulnerabilities;
 
-  if (argv.critical && criticalCount > 0) {
+  if (argv.critical && critical > 0) {
     return 'CRITICAL';
   }
 
-  if (argv.high && (criticalCount > 0 || highCount > 0)) {
+  if (argv.high && (critical > 0 || high > 0)) {
     return 'HIGH';
   }
 
-  if (argv.moderate && (criticalCount > 0 || highCount > 0 || moderateCount > 0)) {
+  if (argv.moderate && (critical > 0 || high > 0 || moderate > 0)) {
     return 'MODERATE';
   }
 
-  if (argv.low && (criticalCount > 0 || highCount > 0 || moderateCount > 0 || lowCount > 0)) {
+  if (argv.low && (critical > 0 || high > 0 || moderate > 0 || low > 0)) {
     return 'LOW';
   }
 
   return '';
-}
+};
 
 const run = () =>{
-  exec('npm audit', function (error, stdout, stderr) {
+  exec('npm audit --json', {cwd: '../warm-welkom'}, function (error, stdout, stderr) {
     if (stdout) {
       if (stdout.indexOf('[+] no known vulnerabilities found') >= 0) {
         return console.log('No issues :: SUCCESS');
@@ -77,10 +70,8 @@ const run = () =>{
       if (argv.report) {
         console.log(stdout);
       }
-
-      var logArr = stdout.split('\n').filter(line => line);
-      var severityline = logArr[logArr.length - 1];
-      var severityType = parseMessage(severityline, argv);
+      
+      var severityType = parseJson(stdout, argv);
       switch (severityType) {
         case 'CRITICAL':
         case 'HIGH':
@@ -108,9 +99,9 @@ const run = () =>{
       console.log('exec error: ' + error);
     }
   });
-}
+};
 
 module.exports = {
   run: run,
-  parseMessage: parseMessage
+  parseMessage: parseJson
 };
