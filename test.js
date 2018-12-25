@@ -25,4 +25,3 @@ test('High vrulnerability, but alert only for critical', t => {
 test('when object doesnt have vulnerabilities', t => {
 	t.is(ci.parseMessage({vulnerabilities: {}}, { critical :true }), '');
 });
-
