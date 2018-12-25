@@ -1,8 +1,8 @@
 'use strict';
-var exec = require('child_process').exec;
-var process = require('process');
+const exec = require('child_process').exec;
+const process = require('process');
 
-var argv = require('yargs')
+const argv = require('yargs')
     .options({
       'l': {
         alias: 'low',
@@ -42,8 +42,6 @@ const getSeverityType = (metadata, argv = {}) => {
   const {vulnerabilities} = metadata;
   const {low, moderate, high, critical} = vulnerabilities;
   let severityType = '';
-  
-  
   
   if (argv.critical && critical > 0) {
     severityType = 'CRITICAL';
