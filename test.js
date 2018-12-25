@@ -3,26 +3,26 @@ import test from 'ava';
 var ci = require('./');
 
 test('only low', t => {
-	t.is(ci.parseMessage('    Severity: 1 Low', { low:true }), 'LOW');
+	t.is(ci.parseMessage({vulnerabilities: {low: 1}}, { low:true }), 'LOW');
 });
 
 test('only moderate', t => {
-	t.is(ci.parseMessage('    Severity: 1 Moderate', { moderate :true }), 'MODERATE');
+	t.is(ci.parseMessage({vulnerabilities: {moderate: 1}}, { moderate :true }), 'MODERATE');
 });
 
 test('only high', t => {
-	t.is(ci.parseMessage('    Severity: 1 High', { high :true }), 'HIGH');
+	t.is(ci.parseMessage({vulnerabilities: {high: 1}}, { high: true}), 'HIGH');
 });
 
 test('only critical', t => {
-	t.is(ci.parseMessage('    Severity: 1 High | 1 Critical', { critical :true }), 'CRITICAL');
+	t.is(ci.parseMessage({vulnerabilities: {critical: 1}}, { critical :true }), 'CRITICAL');
 });
 
 test('High vrulnerability, but alert only for critical', t => {
-	t.is(ci.parseMessage('    Severity: 1 High', { critical :true }), '');
+	t.is(ci.parseMessage({vulnerabilities: {high: 1}}, { critical :true }), '');
 });
 
-test('when line doesnt have Severity', t => {
-	t.is(ci.parseMessage('    1 High', { critical :true }), '');
+test('when object doesnt have vulnerabilities', t => {
+	t.is(ci.parseMessage({vulnerabilities: {}}, { critical :true }), '');
 });
 

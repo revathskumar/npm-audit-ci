@@ -31,37 +31,53 @@ var argv = require('yargs')
       'r': {
         alias: 'report',
         default: false,
-        describe: 'Show npm audit report',
+        describe: 'Show a textual report',
         type: 'boolean'
       }
     })
     .help('help')
     .argv;
 
-const parseJson = (json, argv = {}) => {
-  const {moderate, high, critical} = json.metadata.vulnerabilities;
-
+const getSeverityType = (metadata, argv = {}) => {
+  const {vulnerabilities} = metadata;
+  const {low, moderate, high, critical} = vulnerabilities;
+  let severityType = '';
+  
+  
+  
   if (argv.critical && critical > 0) {
-    return 'CRITICAL';
+    severityType = 'CRITICAL';
   }
 
   if (argv.high && (critical > 0 || high > 0)) {
-    return 'HIGH';
+    severityType = 'HIGH';
   }
 
   if (argv.moderate && (critical > 0 || high > 0 || moderate > 0)) {
-    return 'MODERATE';
+    severityType = 'MODERATE';
   }
 
   if (argv.low && (critical > 0 || high > 0 || moderate > 0 || low > 0)) {
-    return 'LOW';
+    severityType = 'LOW';
   }
 
-  return '';
+  return severityType;
+};
+
+const getSummary = (metadata) => {
+  const {vulnerabilities, totalDependencies} = metadata;
+  const totalVulnerabilities = Object.values(vulnerabilities).reduce((total, level) => total + level, 0);
+  const summary = Object.keys(vulnerabilities).map(level => ({level, count: vulnerabilities[level]}))
+    .filter((levelCount) => levelCount.count > 0)
+    .map(levelCount => `${levelCount.count} ${levelCount.level}`)
+    .join(', ');
+  const severityline = `found ${totalVulnerabilities} vulnerabilities (${summary}) in ${totalDependencies} scanned packages`;
+  
+  return severityline;
 };
 
 const run = () =>{
-  exec('npm audit --json', {cwd: '../warm-welkom'}, function (error, stdout, stderr) {
+  exec('npm audit --json', function (error, stdout, stderr) {
     if (stdout) {
       if (stdout.indexOf('[+] no known vulnerabilities found') >= 0) {
         return console.log('No issues :: SUCCESS');
@@ -71,7 +87,9 @@ const run = () =>{
         console.log(stdout);
       }
       
-      var severityType = parseJson(stdout, argv);
+      const {metadata} = JSON.parse(stdout);
+      const severityType = getSeverityType(metadata, argv);
+      const severityline = getSummary(metadata);
       switch (severityType) {
         case 'CRITICAL':
         case 'HIGH':
@@ -103,5 +121,5 @@ const run = () =>{
 
 module.exports = {
   run: run,
-  parseMessage: parseJson
+  parseMessage: getSeverityType
 };
