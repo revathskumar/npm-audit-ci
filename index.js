@@ -77,10 +77,7 @@ const getSummary = (metadata) => {
 const run = () =>{
   exec('npm audit --json', function (error, stdout, stderr) {
     if (stdout) {
-      if (stdout.indexOf('[+] no known vulnerabilities found') >= 0) {
-        return console.log('No issues :: SUCCESS');
-      }
-      
+     
       if (argv.report) {
         console.log(stdout);
       }
