@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-var ci = require('../');
+const ci = require('../');
 ci.run();
