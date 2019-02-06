@@ -33,6 +33,10 @@ const argv = require('yargs')
         default: false,
         describe: 'Show a textual report',
         type: 'boolean'
+      },
+      'registry': {        
+        describe: 'Use the specified registry for npm audit. If you have configured npm to point to a different default registry, such as your internal private module repository, npm audit will default to that registry when scanning. Pass a different registry url in order to override this setting.',
+        type: 'string'
       }
     })
     .help('help')
@@ -75,7 +79,13 @@ const getSummary = (metadata) => {
 };
 
 const run = () =>{
-  exec('npm audit --json', function (error, stdout, stderr) {
+  let auditCommand = 'npm audit --json';
+  if(argv.registry)
+  {
+    auditCommand += ` --registry ${argv.registry}`;
+  }
+
+  exec(auditCommand, function (error, stdout, stderr) {
     if (stdout) {
      
       if (argv.report) {
