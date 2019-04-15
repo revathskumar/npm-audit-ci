@@ -38,8 +38,8 @@ const argv = require('yargs')
     .help('help')
     .argv;
 
-const getSeverityType = (metadata, argv = {}) => {
-  const {vulnerabilities} = metadata;
+const getSeverityType = (metadata = {}, argv = {}) => {
+  const {vulnerabilities = {}} = metadata;
   const {low, moderate, high, critical} = vulnerabilities;
   let severityType = '';
   
@@ -62,8 +62,8 @@ const getSeverityType = (metadata, argv = {}) => {
   return severityType;
 };
 
-const getSummary = (metadata) => {
-  const {vulnerabilities, totalDependencies} = metadata;
+const getSummary = (metadata = {}) => {
+  const {vulnerabilities = {}, totalDependencies = 0} = metadata;
   const totalVulnerabilities = Object.values(vulnerabilities).reduce((total, level) => total + level, 0);
   const summary = Object.keys(vulnerabilities).map(level => ({level, count: vulnerabilities[level]}))
     .filter((levelCount) => levelCount.count > 0)
