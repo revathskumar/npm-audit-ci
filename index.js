@@ -85,7 +85,9 @@ const run = () =>{
     auditCommand += ` --registry ${argv.registry}`;
   }
 
-  exec(auditCommand, function (error, stdout, stderr) {
+  const execOptions = { maxBuffer: 10 * 1024 * 1024 };
+
+  exec(auditCommand, execOptions, function (error, stdout, stderr) {
     if (stdout) {
      
       if (argv.report) {
