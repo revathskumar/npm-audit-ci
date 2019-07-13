@@ -85,7 +85,14 @@ const run = () =>{
     auditCommand += ` --registry ${argv.registry}`;
   }
 
-  exec(auditCommand, function (error, stdout, stderr) {
+  const execOptions = { maxBuffer: 10 * 1024 * 1024 };
+
+  exec(auditCommand, execOptions, function (error, stdout, stderr) {
+    if (error !== null) {
+      console.log('exec error: ' + error);
+      return;
+    }
+
     if (stdout) {
      
       if (argv.report) {
@@ -117,9 +124,6 @@ const run = () =>{
 
           return;
       }
-    }
-    if (error !== null) {
-      console.log('exec error: ' + error);
     }
   });
 };
