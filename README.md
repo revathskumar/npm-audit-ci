@@ -24,6 +24,11 @@ Options:
   -c, --critical  Exit only for critical vulnerabilities
                                                        [boolean] [default: true]
   -r, --report    Show npm audit report               [boolean] [default: false]
+  --registry      Use the specified registry for npm audit. If you have
+                  configured npm to point to a different default registry, such
+                  as your internal private module repository, npm audit will
+                  default to that registry when scanning. Pass a different
+                  registry url in order to override this setting.       [string]
   --help          Show help                                            [boolean]
 ```
 
